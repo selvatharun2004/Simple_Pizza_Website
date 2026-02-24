@@ -1,0 +1,79 @@
+{% extends "base.html" %} {% block title %}Shopping Cart - Pizza Shop{% endblock
+%} {% block content %}
+<div class="container">
+  <h1 class="text-center mb-4">Your Shopping Cart</h1>
+
+  {% if cart and cart|length > 0 %}
+  <!-- Cart Items Table -->
+  <div class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead class="table-danger">
+        <tr>
+          <th scope="col">Pizza Name</th>
+          <th scope="col">Price</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Subtotal</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pizza_id, item in cart.items() %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>₹{{ "%.2f"|format(item.price) }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>₹{{ "%.2f"|format(item.price * item.quantity) }}</td>
+          <td>
+            <form
+              action="/remove_from_cart/{{ pizza_id }}"
+              method="post"
+              style="display: inline"
+            >
+              <button type="submit" class="btn btn-sm btn-outline-danger">
+                Remove
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Total Price -->
+  <div class="row justify-content-end mt-4">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Order Summary</h5>
+          <hr />
+          <div class="d-flex justify-content-between">
+            <strong>Total:</strong>
+            <strong class="text-danger">₹{{ "%.2f"|format(total) }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <a href="/" class="btn btn-outline-secondary w-100">Continue Shopping</a>
+    </div>
+    <div class="col-md-6">
+      <a href="/checkout" class="btn btn-danger w-100">Proceed to Checkout</a>
+    </div>
+  </div>
+
+  {% else %}
+  <!-- Empty Cart Message -->
+  <div class="alert alert-info text-center" role="alert">
+    <h4 class="alert-heading">Cart is empty</h4>
+    <p>You haven't added any pizzas to your cart yet.</p>
+    <hr />
+    <a href="/" class="btn btn-danger">Browse Our Menu</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

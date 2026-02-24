@@ -1,0 +1,127 @@
+{% extends "base.html" %} {% block title %}Checkout - Pizza Shop{% endblock %}
+{% block content %}
+<div class="container">
+  <h1 class="text-center mb-4">Checkout</h1>
+
+  {% if error %}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ error }}
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+  {% endif %}
+
+  <div class="row">
+    <!-- Customer Information Form -->
+    <div class="col-md-7">
+      <div class="card mb-4">
+        <div class="card-header bg-danger text-white">
+          <h5 class="mb-0">Delivery Information</h5>
+        </div>
+        <div class="card-body">
+          <form action="/checkout" method="post">
+            <div class="mb-3">
+              <label for="name" class="form-label"
+                >Full Name <span class="text-danger">*</span></label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                name="name"
+                required
+                placeholder="Enter your full name"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="phone" class="form-label"
+                >Phone Number <span class="text-danger">*</span></label
+              >
+              <input
+                type="tel"
+                class="form-control"
+                id="phone"
+                name="phone"
+                required
+                placeholder="Enter your phone number"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="address" class="form-label"
+                >Delivery Address <span class="text-danger">*</span></label
+              >
+              <textarea
+                class="form-control"
+                id="address"
+                name="address"
+                rows="3"
+                required
+                placeholder="Enter your complete delivery address"
+              ></textarea>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-danger btn-lg">
+                Place Order
+              </button>
+              <a href="/cart" class="btn btn-outline-secondary">
+                Back to Cart
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="col-md-5">
+      <div class="card order-summary-card">
+        <div class="card-header bg-danger text-white">
+          <h5 class="mb-0">Order Summary</h5>
+        </div>
+        <div class="card-body">
+          {% if cart and cart|length > 0 %}
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th class="text-center">Qty</th>
+                  <th class="text-end">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for pizza_id, item in cart.items() %}
+                <tr>
+                  <td>{{ item.name }}</td>
+                  <td class="text-center">{{ item.quantity }}</td>
+                  <td class="text-end">
+                    ₹{{ "%.2f"|format(item.price * item.quantity) }}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <hr />
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Total:</h5>
+            <h5 class="mb-0 text-danger">₹{{ "%.2f"|format(total) }}</h5>
+          </div>
+          {% else %}
+          <div class="alert alert-warning mb-0" role="alert">
+            Your cart is empty. Please add items before checkout.
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

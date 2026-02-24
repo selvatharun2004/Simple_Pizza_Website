@@ -1,0 +1,122 @@
+{% extends "base.html" %} {% block title %}Pizza Menu - Pizza Shop{% endblock %}
+{% block content %}
+<div class="container">
+  <h1 class="text-center mb-4">Our Pizza Menu</h1>
+
+  <!-- Feedback message container -->
+  <div
+    id="feedback-message"
+    class="alert alert-success alert-dismissible fade"
+    role="alert"
+    style="display: none"
+  >
+    <span id="feedback-text"></span>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for pizza in pizzas %}
+    <div class="col">
+      <div class="card pizza-card h-100 shadow-sm">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ pizza.name }}</h5>
+          <p class="card-text text-muted fs-5">
+            ₹{{ "%.2f"|format(pizza.price) }}
+          </p>
+          <form
+            action="/add_to_cart/{{ pizza.id }}"
+            method="post"
+            class="mt-auto add-to-cart-form"
+            data-pizza-id="{{ pizza.id }}"
+          >
+            <button type="submit" class="btn btn-danger w-100">
+              Add to Cart
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Get all add to cart forms
+    const forms = document.querySelectorAll(".add-to-cart-form");
+
+    forms.forEach((form) => {
+      form.addEventListener("submit", function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        const pizzaId = this.dataset.pizzaId;
+        const url = `/add_to_cart/${pizzaId}`;
+        const submitButton = this.querySelector('button[type="submit"]');
+
+        // Add loading state
+        submitButton.classList.add("loading");
+        submitButton.disabled = true;
+
+        // Send AJAX POST request
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Remove loading state
+            submitButton.classList.remove("loading");
+            submitButton.disabled = false;
+
+            if (data.success) {
+              // Display success feedback message
+              showFeedback(data.message, "success");
+            } else {
+              // Display error feedback message
+              showFeedback(
+                data.error || "Failed to add item to cart",
+                "danger",
+              );
+            }
+          })
+          .catch((error) => {
+            // Remove loading state
+            submitButton.classList.remove("loading");
+            submitButton.disabled = false;
+
+            console.error("Error:", error);
+            showFeedback("An error occurred. Please try again.", "danger");
+          });
+      });
+    });
+
+    // Function to display feedback message
+    function showFeedback(message, type) {
+      const feedbackDiv = document.getElementById("feedback-message");
+      const feedbackText = document.getElementById("feedback-text");
+
+      // Set message text
+      feedbackText.textContent = message;
+
+      // Update alert class based on type
+      feedbackDiv.className = `alert alert-${type} alert-dismissible fade show`;
+      feedbackDiv.style.display = "block";
+
+      // Auto-hide after 3 seconds
+      setTimeout(() => {
+        feedbackDiv.classList.remove("show");
+        setTimeout(() => {
+          feedbackDiv.style.display = "none";
+        }, 150);
+      }, 3000);
+    }
+  });
+</script>
+{% endblock %}

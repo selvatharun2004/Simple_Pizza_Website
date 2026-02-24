@@ -1,0 +1,182 @@
+{% extends "base.html" %} {% block title %}Manager Dashboard - All Orders{%
+endblock %} {% block content %}
+<div class="container">
+  <div class="row mb-4">
+    <div class="col">
+      <h1 class="text-center">
+        <i class="bi bi-clipboard-data"></i> Manager Dashboard
+      </h1>
+      <p class="text-center text-muted">View and manage all customer orders</p>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card text-center shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-muted">Total Orders</h5>
+          <h2 class="text-danger">{{ total_orders }}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-center shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-muted">Current Page</h5>
+          <h2 class="text-danger">{{ page }} / {{ total_pages }}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-center shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-muted">Orders Per Page</h5>
+          <h2 class="text-danger">{{ per_page }}</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if orders and orders|length > 0 %}
+  <!-- Orders Table -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-danger text-white">
+      <h5 class="mb-0"><i class="bi bi-list-ul"></i> All Orders</h5>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">Order ID</th>
+              <th scope="col">Customer Name</th>
+              <th scope="col">Phone</th>
+              <th scope="col">Address</th>
+              <th scope="col">Total (₹)</th>
+              <th scope="col">Order Date</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+            <tr>
+              <td><strong>#{{ order.id }}</strong></td>
+              <td>{{ order.customer_name }}</td>
+              <td>{{ order.phone }}</td>
+              <td>
+                <span
+                  class="text-truncate d-inline-block"
+                  style="max-width: 200px"
+                  title="{{ order.address }}"
+                >
+                  {{ order.address }}
+                </span>
+              </td>
+              <td><strong>₹{{ "%.2f"|format(order.total_price) }}</strong></td>
+              <td>
+                <small class="text-muted">{{ order.order_date }}</small>
+              </td>
+              <td>
+                <a
+                  href="/manager/orders/{{ order.id }}"
+                  class="btn btn-sm btn-outline-danger"
+                >
+                  <i class="bi bi-eye"></i> View Details
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  {% if total_pages > 1 %}
+  <nav aria-label="Orders pagination" class="mt-4">
+    <ul class="pagination justify-content-center">
+      <!-- Previous Button -->
+      <li class="page-item {% if not has_prev %}disabled{% endif %}">
+        <a
+          class="page-link"
+          href="?page={{ page - 1 }}&per_page={{ per_page }}"
+          {%
+          if
+          not
+          has_prev
+          %}tabindex="-1"
+          aria-disabled="true"
+          {%
+          endif
+          %}
+        >
+          <i class="bi bi-chevron-left"></i> Previous
+        </a>
+      </li>
+
+      <!-- Page Numbers -->
+      {% for p in range(1, total_pages + 1) %} {% if p == page %}
+      <li class="page-item active" aria-current="page">
+        <span class="page-link">{{ p }}</span>
+      </li>
+      {% elif p == 1 or p == total_pages or (p >= page - 2 and p <= page + 2) %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ p }}&per_page={{ per_page }}"
+          >{{ p }}</a
+        >
+      </li>
+      {% elif p == page - 3 or p == page + 3 %}
+      <li class="page-item disabled">
+        <span class="page-link">...</span>
+      </li>
+      {% endif %} {% endfor %}
+
+      <!-- Next Button -->
+      <li class="page-item {% if not has_next %}disabled{% endif %}">
+        <a
+          class="page-link"
+          href="?page={{ page + 1 }}&per_page={{ per_page }}"
+          {%
+          if
+          not
+          has_next
+          %}tabindex="-1"
+          aria-disabled="true"
+          {%
+          endif
+          %}
+        >
+          Next <i class="bi bi-chevron-right"></i>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  {% endif %} {% else %}
+  <!-- No Orders Message -->
+  <div class="alert alert-info text-center" role="alert">
+    <h4 class="alert-heading"><i class="bi bi-inbox"></i> No Orders Yet</h4>
+    <p>
+      There are no orders in the system yet. Orders will appear here once
+      customers start placing them.
+    </p>
+    <hr />
+    <a href="/" class="btn btn-danger">Go to Menu</a>
+  </div>
+  {% endif %}
+
+  <!-- Back to Home Button -->
+  <div class="text-center mt-4">
+    <a href="/" class="btn btn-outline-secondary">
+      <i class="bi bi-house-door"></i> Back to Homepage
+    </a>
+  </div>
+</div>
+
+<!-- Add Bootstrap Icons if not already included -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+/>
+{% endblock %}

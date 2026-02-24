@@ -1,0 +1,414 @@
+/* Custom CSS for Pizza Shop Website */
+
+/* Root Variables for Consistent Theming */
+:root {
+  --primary-red: #dc3545;
+  --primary-red-hover: #bb2d3b;
+  --primary-red-dark: #a02834;
+  --light-gray: #f8f9fa;
+  --border-radius: 0.5rem;
+  --transition-speed: 0.3s;
+  --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  --shadow-hover: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.2);
+}
+
+/* Global Styles */
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+/* Button Styling Enhancements */
+.btn {
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  transition: all var(--transition-speed) ease;
+  border: none;
+}
+
+.btn-danger {
+  background-color: var(--primary-red);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-danger:hover {
+  background-color: var(--primary-red-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-danger:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-outline-danger {
+  border: 2px solid var(--primary-red);
+  color: var(--primary-red);
+}
+
+.btn-outline-danger:hover {
+  background-color: var(--primary-red);
+  border-color: var(--primary-red);
+  transform: translateY(-1px);
+}
+
+.btn-outline-secondary {
+  border: 2px solid #6c757d;
+  transition: all var(--transition-speed) ease;
+}
+
+.btn-outline-secondary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Form Styling */
+.form-control,
+.form-select {
+  border-radius: var(--border-radius);
+  border: 2px solid #dee2e6;
+  transition: all var(--transition-speed) ease;
+  padding: 0.75rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-red);
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  transform: scale(1.01);
+}
+
+.form-label {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+/* Card Enhancements */
+.card {
+  border-radius: var(--border-radius);
+  border: none;
+  transition: all var(--transition-speed) ease;
+}
+
+.card.shadow-sm {
+  box-shadow: var(--shadow-sm);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-5px);
+}
+
+.card-header {
+  border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+  font-weight: 600;
+}
+
+/* Pizza Menu Cards */
+.pizza-card {
+  height: 100%;
+  transition: all var(--transition-speed) ease;
+}
+
+.pizza-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-hover);
+}
+
+.pizza-card .card-title {
+  color: #212529;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.pizza-card .card-text {
+  font-weight: 600;
+  color: var(--primary-red) !important;
+}
+
+/* Navigation Bar */
+.navbar {
+  box-shadow: var(--shadow-md);
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  transition: transform var(--transition-speed) ease;
+}
+
+.navbar-brand:hover {
+  transform: scale(1.05);
+}
+
+.nav-link {
+  font-weight: 500;
+  transition: all var(--transition-speed) ease;
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: white;
+  transition: all var(--transition-speed) ease;
+  transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+  width: 80%;
+}
+
+/* Table Styling */
+.table {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.table-hover tbody tr {
+  transition: all var(--transition-speed) ease;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(220, 53, 69, 0.05);
+  transform: scale(1.01);
+}
+
+/* Alert Styling */
+.alert {
+  border-radius: var(--border-radius);
+  border: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.alert-success {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+.alert-info {
+  background-color: #cff4fc;
+  color: #055160;
+}
+
+/* Feedback Message Animation */
+#feedback-message {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 1050;
+  min-width: 300px;
+  animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Loading State for Buttons */
+.btn.loading {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+}
+
+.btn.loading::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spinner 0.6s linear infinite;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Footer Styling */
+footer {
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive Design Improvements */
+
+/* Mobile Devices (up to 576px) */
+@media (max-width: 576px) {
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .btn-lg {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+  }
+
+  #feedback-message {
+    right: 10px;
+    left: 10px;
+    min-width: auto;
+  }
+
+  .table-responsive {
+    font-size: 0.875rem;
+  }
+
+  /* Stack action buttons vertically on mobile */
+  .row .col-md-6 {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Tablets (577px to 768px) */
+@media (min-width: 577px) and (max-width: 768px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .card-body {
+    padding: 1.25rem;
+  }
+}
+
+/* Desktop (769px and up) */
+@media (min-width: 769px) {
+  /* Hover effects only on desktop */
+  .card:hover {
+    cursor: pointer;
+  }
+
+  /* Better spacing for larger screens */
+  .container {
+    max-width: 1200px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .navbar,
+  footer,
+  .btn,
+  form {
+    display: none;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 1px solid #dee2e6;
+  }
+}
+
+/* Accessibility Improvements */
+.btn:focus,
+.form-control:focus,
+.nav-link:focus {
+  outline: 3px solid rgba(220, 53, 69, 0.5);
+  outline-offset: 2px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .btn-danger {
+    border: 2px solid currentColor;
+  }
+
+  .form-control {
+    border-width: 2px;
+  }
+}
+
+/* Empty state styling */
+.empty-state {
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.empty-state h4 {
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
+
+/* Success checkmark animation */
+.success-icon {
+  animation: scaleIn 0.5s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Order summary card styling */
+.order-summary-card {
+  position: sticky;
+  top: 20px;
+}
+
+/* Quantity badge styling */
+.quantity-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background-color: var(--primary-red);
+  color: white;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
