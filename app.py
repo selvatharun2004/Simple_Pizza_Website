@@ -37,7 +37,8 @@ def init_db():
             CREATE TABLE IF NOT EXISTS pizzas (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
-                price REAL NOT NULL
+                price REAL NOT NULL,
+                image_url TEXT DEFAULT 'default-pizza.jpg'
             )
         ''')
         
@@ -71,14 +72,14 @@ def init_db():
         cursor.execute('SELECT COUNT(*) FROM pizzas')
         if cursor.fetchone()[0] == 0:
             sample_pizzas = [
-                ('Margherita', 299.0),
-                ('Pepperoni', 399.0),
-                ('Vegetarian', 349.0),
-                ('BBQ Chicken', 449.0),
-                ('Hawaiian', 379.0),
-                ('Four Cheese', 429.0)
+                ('Margherita', 299.0, 'margherita.jpg'),
+                ('Pepperoni', 399.0, 'pepperoni.jpg'),
+                ('Vegetarian', 349.0, 'vegetarian.jpg'),
+                ('BBQ Chicken', 449.0, 'bbq-chicken.jpg'),
+                ('Hawaiian', 379.0, 'hawaiian.jpg'),
+                ('Four Cheese', 429.0, 'four-cheese.jpg')
             ]
-            cursor.executemany('INSERT INTO pizzas (name, price) VALUES (?, ?)', sample_pizzas)
+            cursor.executemany('INSERT INTO pizzas (name, price, image_url) VALUES (?, ?, ?)', sample_pizzas)
         
         conn.commit()
         conn.close()
@@ -102,17 +103,17 @@ class MenuService:
         Retrieve all available pizzas from database
 
         Returns:
-            List of dicts with keys: id, name, price
+            List of dicts with keys: id, name, price, image_url
         """
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute('SELECT id, name, price FROM pizzas')
+            cursor.execute('SELECT id, name, price, image_url FROM pizzas')
             rows = cursor.fetchall()
             conn.close()
             
             # Convert Row objects to dictionaries
-            pizzas = [{'id': row['id'], 'name': row['name'], 'price': row['price']} for row in rows]
+            pizzas = [{'id': row['id'], 'name': row['name'], 'price': row['price'], 'image_url': row['image_url']} for row in rows]
             return pizzas
         except Exception as e:
             logger.error(f"Error retrieving pizzas: {str(e)}")
@@ -129,17 +130,17 @@ class MenuService:
             pizza_id: Unique pizza identifier
 
         Returns:
-            Dict with keys: id, name, price, or None if not found
+            Dict with keys: id, name, price, image_url, or None if not found
         """
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute('SELECT id, name, price FROM pizzas WHERE id = ?', (pizza_id,))
+            cursor.execute('SELECT id, name, price, image_url FROM pizzas WHERE id = ?', (pizza_id,))
             row = cursor.fetchone()
             conn.close()
             
             if row:
-                return {'id': row['id'], 'name': row['name'], 'price': row['price']}
+                return {'id': row['id'], 'name': row['name'], 'price': row['price'], 'image_url': row['image_url']}
             return None
         except Exception as e:
             logger.error(f"Error retrieving pizza {pizza_id}: {str(e)}")
@@ -152,7 +153,7 @@ class CartManager:
     """Handles shopping cart operations using session storage"""
 
     @staticmethod
-    def add_item(pizza_id, pizza_name, price):
+    def add_item(pizza_id, pizza_name, price, image_url='default-pizza.jpg'):
         """
         Add pizza to cart or increment quantity if already present
 
@@ -160,6 +161,7 @@ class CartManager:
             pizza_id: Unique pizza identifier
             pizza_name: Name of the pizza
             price: Price in INR
+            image_url: Image filename for the pizza
         """
         try:
             if 'cart' not in session:
@@ -184,13 +186,15 @@ class CartManager:
                     cart[pizza_id_str] = {
                         'name': pizza_name,
                         'price': price,
-                        'quantity': 1
+                        'quantity': 1,
+                        'image_url': image_url
                     }
             else:
                 cart[pizza_id_str] = {
                     'name': pizza_name,
                     'price': price,
-                    'quantity': 1
+                    'quantity': 1,
+                    'image_url': image_url
                 }
             
             session['cart'] = cart
@@ -516,8 +520,8 @@ def add_to_cart(pizza_id):
             logger.warning(f"Attempt to add invalid pizza ID: {pizza_id}")
             return jsonify({'success': False, 'error': 'Invalid pizza ID'}), 404
         
-        # Add item to cart
-        CartManager.add_item(pizza['id'], pizza['name'], pizza['price'])
+        # Add item to cart with image URL
+        CartManager.add_item(pizza['id'], pizza['name'], pizza['price'], pizza.get('image_url', 'default-pizza.jpg'))
         
         logger.info(f"Pizza {pizza['name']} (ID: {pizza_id}) added to cart")
         return jsonify({'success': True, 'message': f"{pizza['name']} added to cart"}), 200

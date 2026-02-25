@@ -23,6 +23,23 @@
     {% for pizza in pizzas %}
     <div class="col">
       <div class="card pizza-card h-100 shadow-sm">
+        <img
+          src="{{ url_for('static', filename='images/pizzas/' + pizza.image_url) }}"
+          class="card-img-top"
+          alt="{{ pizza.name }}"
+          style="
+            height: 250px;
+            object-fit: cover;
+            border-radius: 0.5rem 0.5rem 0 0;
+          "
+          onerror="
+            this.style.display = 'none';
+            this.nextElementSibling.style.display = 'flex';
+          "
+        />
+        <div class="pizza-image-placeholder gradient-{{ loop.index0 % 6 }}">
+          🍕
+        </div>
         <div class="card-body d-flex flex-column">
           <h5 class="card-title">{{ pizza.name }}</h5>
           <p class="card-text text-muted fs-5">

@@ -49,7 +49,8 @@ def init_db(database='pizza_shop.db'):
             CREATE TABLE IF NOT EXISTS pizzas (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
-                price REAL NOT NULL
+                price REAL NOT NULL,
+                image_url TEXT DEFAULT 'default-pizza.jpg'
             )
         ''')
         
@@ -83,14 +84,14 @@ def init_db(database='pizza_shop.db'):
         cursor.execute('SELECT COUNT(*) FROM pizzas')
         if cursor.fetchone()[0] == 0:
             sample_pizzas = [
-                ('Margherita', 299.0),
-                ('Pepperoni', 399.0),
-                ('Vegetarian', 349.0),
-                ('BBQ Chicken', 449.0),
-                ('Hawaiian', 379.0),
-                ('Four Cheese', 429.0)
+                ('Margherita', 299.0, 'margherita.jpg'),
+                ('Pepperoni', 399.0, 'pepperoni.jpg'),
+                ('Vegetarian', 349.0, 'vegetarian.jpg'),
+                ('BBQ Chicken', 449.0, 'bbq-chicken.jpg'),
+                ('Hawaiian', 379.0, 'hawaiian.jpg'),
+                ('Four Cheese', 429.0, 'four-cheese.jpg')
             ]
-            cursor.executemany('INSERT INTO pizzas (name, price) VALUES (?, ?)', sample_pizzas)
+            cursor.executemany('INSERT INTO pizzas (name, price, image_url) VALUES (?, ?, ?)', sample_pizzas)
         
         conn.commit()
         conn.close()
