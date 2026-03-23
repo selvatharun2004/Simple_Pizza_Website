@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "pizza-app"
+        IMAGE_NAME = "selvatharun2812/pizza-app"
         CONTAINER_NAME = "pizza-container"
         PORT = "5000"
         PYTHON_PATH = "C:\\Users\\Selva Tharun R R\\AppData\\Local\\Python\\bin\\python.exe"
@@ -24,7 +24,9 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t %IMAGE_NAME% .'
+                script {
+                    appImage = docker.build("${IMAGE_NAME}:latest")
+                }
             }
         }
 
@@ -32,7 +34,6 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('', 'docker-hub-creds') {
-                        def appImage = docker.build("selvatharun2812/pizza-app:latest")
                         appImage.push()
                     }
                 }
@@ -47,7 +48,7 @@ pipeline {
 
         stage('Run New Container') {
             steps {
-                bat 'docker run -d -p %PORT%:%PORT% --name %CONTAINER_NAME% %IMAGE_NAME%'
+                bat 'docker run -d -p %PORT%:%PORT% --name %CONTAINER_NAME% %IMAGE_NAME%:latest'
             }
         }
     }
