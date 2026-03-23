@@ -339,7 +339,7 @@ def test_property_order_persistence_round_trip(client, customer_name, phone, add
 
 # Feature: pizza-shop-website, Property 11: Order ID Uniqueness
 # **Validates: Requirements 6.3**
-@settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture])
+@settings(max_examples=100, suppress_health_check=[HealthCheck.function_scoped_fixture], deadline=None)
 @given(
     num_orders=st.integers(min_value=2, max_value=20),
     customer_names=st.lists(

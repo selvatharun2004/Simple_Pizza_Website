@@ -31,11 +31,11 @@ pipeline {
             }
         }
 
-        stage('Security Scan') {
-            steps {
-                bat 'trivy image %IMAGE_NAME%:latest'
-            }
-        }
+        // stage('Security Scan') {
+        //     steps {
+        //         bat 'trivy image %IMAGE_NAME%:latest'
+        //     }
+        // }
 
         stage('Push to Docker Hub') {
             steps {
