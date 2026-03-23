@@ -16,6 +16,7 @@ app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-producti
 
 DATABASE = 'pizza_shop.db'
 
+#used for db connection
 def get_db_connection():
     """Create and return a database connection"""
     try:
