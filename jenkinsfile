@@ -28,6 +28,17 @@ pipeline {
             }
         }
 
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    docker.withRegistry('', 'docker-hub-creds') {
+                        def appImage = docker.build("selvatharun2812/pizza-app:latest")
+                        appImage.push()
+                    }
+                }
+            }
+        }
+
         stage('Stop Old Container') {
             steps {
                 bat 'docker rm -f %CONTAINER_NAME% || exit 0'

@@ -709,5 +709,5 @@ def manager_order_detail(order_id):
         return render_template('500.html'), 500
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
