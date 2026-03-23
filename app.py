@@ -149,7 +149,7 @@ class MenuService:
                 conn.close()
             return None
 
-
+#car manager code
 class CartManager:
     """Handles shopping cart operations using session storage"""
 
