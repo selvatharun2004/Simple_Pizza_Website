@@ -25,8 +25,15 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    appImage = docker.build("${IMAGE_NAME}:latest")
+                    def tag = "${BUILD_NUMBER}"
+                    appImage = docker.build("${IMAGE_NAME}:${tag}")
                 }
+            }
+        }
+
+        stage('Security Scan') {
+            steps {
+                bat 'trivy image %IMAGE_NAME%:latest'
             }
         }
 
@@ -34,9 +41,16 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('', 'docker-hub-creds') {
-                        appImage.push()
+                        appImage.push("${BUILD_NUMBER}")
+                        appImage.push("latest")
                     }
                 }
+            }
+        }
+
+        stage('Pull Latest Image') {
+            steps {
+                bat 'docker pull %IMAGE_NAME%:latest'
             }
         }
 
@@ -50,6 +64,18 @@ pipeline {
             steps {
                 bat 'docker run -d -p %PORT%:%PORT% --name %CONTAINER_NAME% %IMAGE_NAME%:latest'
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline completed'
+        }
+        success {
+            echo 'Deployment successful'
+        }
+        failure {
+            echo 'Pipeline failed'
         }
     }
 }
