@@ -5,39 +5,38 @@ pipeline {
         IMAGE_NAME = "pizza-app"
         CONTAINER_NAME = "pizza-container"
         PORT = "5000"
+        PYTHON_PATH = "C:\\Users\\Selva Tharun R R\\AppData\\Local\\Python\\bin\\python.exe"
     }
 
     stages {
 
         stage('Install Dependencies') {
             steps {
-                bat 'python -m pip install -r requirements.txt'
+                bat '"%PYTHON_PATH%" -m pip install -r requirements.txt'
             }
         }
 
         stage('Run Tests') {
             steps {
-                bat 'python -m pytest || exit 0'
+                bat '"%PYTHON_PATH%" -m pytest || exit 0'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t $IMAGE_NAME .'
+                bat 'docker build -t %IMAGE_NAME% .'
             }
         }
 
         stage('Stop Old Container') {
             steps {
-                bat 'docker rm -f $CONTAINER_NAME || true'
+                bat 'docker rm -f %CONTAINER_NAME% || exit 0'
             }
         }
 
         stage('Run New Container') {
             steps {
-                bat '''
-                docker run -d -p $PORT:$PORT --name $CONTAINER_NAME $IMAGE_NAME
-                '''
+                bat 'docker run -d -p %PORT%:%PORT% --name %CONTAINER_NAME% %IMAGE_NAME%'
             }
         }
     }
