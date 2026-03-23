@@ -559,7 +559,7 @@ def remove_from_cart(pizza_id):
         logger.error(f"Error removing pizza {pizza_id} from cart: {str(e)}")
         return redirect(url_for('cart'))
 
-
+#checkout of pizzas
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
     """Display checkout page with form and order summary, or process order submission"""
