@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  pizza-app:
+    image: selvatharun2812/pizza-app:latest
+    container_name: pizza-container
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - SECRET_KEY=change-this-in-production
+    volumes:
+      - pizza_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  pizza_data:

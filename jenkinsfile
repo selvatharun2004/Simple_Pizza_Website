@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         IMAGE_NAME = "selvatharun2812/pizza-app"
-        CONTAINER_NAME = "pizza-container"
         PORT = "5000"
         PYTHON_PATH = "C:\\Users\\Selva Tharun R R\\AppData\\Local\\Python\\bin\\python.exe"
     }
@@ -18,7 +17,12 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                bat '"%PYTHON_PATH%" -m pytest || exit 0'
+                bat '"%PYTHON_PATH%" -m pytest tests/ --junitxml=test-results.xml || exit 0'
+            }
+            post {
+                always {
+                    junit 'test-results.xml'
+                }
             }
         }
 
@@ -31,12 +35,6 @@ pipeline {
             }
         }
 
-        // stage('Security Scan') {
-        //     steps {
-        //         bat 'trivy image %IMAGE_NAME%:latest'
-        //     }
-        // }
-
         stage('Push to Docker Hub') {
             steps {
                 script {
@@ -48,21 +46,17 @@ pipeline {
             }
         }
 
-        stage('Pull Latest Image') {
+        stage('Deploy with Docker Compose') {
             steps {
-                bat 'docker pull %IMAGE_NAME%:latest'
+                bat 'docker compose down --remove-orphans'
+                bat 'docker compose pull'
+                bat 'docker compose up -d --build'
             }
         }
 
-        stage('Stop Old Container') {
+        stage('Health Check') {
             steps {
-                bat 'docker rm -f %CONTAINER_NAME% || exit 0'
-            }
-        }
-
-        stage('Run New Container') {
-            steps {
-                bat 'docker run -d -p %PORT%:%PORT% --name %CONTAINER_NAME% %IMAGE_NAME%:latest'
+                bat 'docker compose ps'
             }
         }
     }
@@ -72,10 +66,11 @@ pipeline {
             echo 'Pipeline completed'
         }
         success {
-            echo 'Deployment successful'
+            echo 'Deployment successful - app running on port 5000'
         }
         failure {
-            echo 'Pipeline failed'
+            bat 'docker compose logs --tail=50'
+            echo 'Pipeline failed - check logs above'
         }
     }
 }
