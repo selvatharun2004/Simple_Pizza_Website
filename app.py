@@ -657,7 +657,7 @@ def internal_server_error(e):
     return render_template('500.html'), 500
 
 
-# Manager routes
+
 @app.route('/manager/orders')
 def manager_orders():
     """Display all orders for the manager"""
