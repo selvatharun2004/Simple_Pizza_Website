@@ -6,7 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
+#DATABASE CONNECTION
 def get_db_connection(database='pizza_shop.db'):
     """
     Create and return a database connection
