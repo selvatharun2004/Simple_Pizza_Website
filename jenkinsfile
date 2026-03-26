@@ -48,6 +48,8 @@ pipeline {
 
         stage('Deploy with Docker Compose') {
             steps {
+                // Force remove any orphan container not tracked by compose
+                bat 'docker rm -f pizza-container || exit 0'
                 bat 'docker compose down --remove-orphans'
                 bat 'docker compose pull'
                 bat 'docker compose up -d --build'

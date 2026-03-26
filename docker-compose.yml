@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   pizza-app:
     image: selvatharun2812/pizza-app:latest
